@@ -3,6 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="expand_activity_title">Expand/Shrink Animation</string>
     <string name="expand">Expand</string>
     <string name="shrink">Shrink</string>
 </resources>
