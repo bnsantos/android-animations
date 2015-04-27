@@ -6,4 +6,5 @@
     <string name="expand_activity_title">Expand/Shrink Animation</string>
     <string name="expand">Expand</string>
     <string name="shrink">Shrink</string>
+    <string name="hold_inside">Hold inside to expand</string>
 </resources>

@@ -21,4 +21,11 @@
         android:textSize="20sp"
         android:layout_gravity="center"
         android:textColor="@android:color/white"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_margin="@dimen/small_margin"
+        android:textSize="@dimen/label_text_size"
+        android:text="@string/hold_inside"/>
 </FrameLayout>

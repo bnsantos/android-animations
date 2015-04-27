@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,7 +17,7 @@ public class ExpandActivity extends ActionBarActivity {
     private ImageView mCircleView;
     private Button mButton;
     private DisplayMetrics mMetrics;
-    private Mode mMode = Mode.EXPAND;
+    private Mode mMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,26 +30,22 @@ public class ExpandActivity extends ActionBarActivity {
         mCircleView = (ImageView) findViewById(R.id.imageView);
 
         mButton = (Button) findViewById(R.id.button);
-        mButton.setOnClickListener(new View.OnClickListener() {
+
+        mButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                if(mMode==Mode.EXPAND){
-                    mMode = Mode.SHRINK;
-                    mButton.setText(R.string.shrink);
-                    mButton.setBackgroundResource(R.drawable.round_white);
-                    mButton.setTextColor(getResources().getColor(android.R.color.black));
-                    ResizeAnimation resizeAnimation = new ResizeAnimation(mCircleView, mMetrics.heightPixels, mMetrics.heightPixels);
-                    resizeAnimation.setDuration(1200);
-                    mCircleView.startAnimation(resizeAnimation);
-                }else{
-                    mMode = Mode.EXPAND;
-                    mButton.setText(R.string.expand);
-                    mButton.setBackgroundResource(R.drawable.round_colored);
-                    mButton.setTextColor(getResources().getColor(android.R.color.white));
-                    ResizeAnimation resizeAnimation = new ResizeAnimation(mCircleView, mButton.getWidth(), mButton.getHeight());
-                    resizeAnimation.setDuration(300);
-                    mCircleView.startAnimation(resizeAnimation);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        selectAnimation(isFingerOutsideButton(event.getX(), event.getY(), v));
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        shrink();
+                        return true;
+                    case MotionEvent.ACTION_DOWN:
+                        expand();
+                        return true;
                 }
+                return false;
             }
         });
     }
@@ -74,6 +71,45 @@ public class ExpandActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isFingerOutsideButton(float x, float y, View v){
+        float centerX = v.getHeight() / 2;
+        float centerY = v.getWidth() / 2;
+        double d = x - centerX;
+        double d1 = y - centerY;
+
+        return Math.pow(d1, 2) + Math.pow(d, 2) > Math.pow(v.getHeight() / 2, 2);
+    }
+
+    private void selectAnimation(boolean isOutside){
+        if(isOutside){
+            if(mMode!=null&&mMode!=Mode.SHRINK){
+                shrink();
+            }
+        }else{
+            if(mMode!=null&&mMode!=Mode.EXPAND){
+                expand();
+            }
+        }
+    }
+
+    private void expand(){
+        mMode = Mode.EXPAND;
+        mButton.setBackgroundResource(R.drawable.round_white);
+        mButton.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+        ResizeAnimation resizeAnimation = new ResizeAnimation(mCircleView, mMetrics.heightPixels, mMetrics.heightPixels);
+        resizeAnimation.setDuration(200);
+        mCircleView.startAnimation(resizeAnimation);
+    }
+
+    private void shrink(){
+        mMode = Mode.SHRINK;
+        mButton.setBackgroundResource(R.drawable.round_colored);
+        mButton.setTextColor(getResources().getColor(android.R.color.white));
+        ResizeAnimation resizeAnimation = new ResizeAnimation(mCircleView, mButton.getWidth(), mButton.getHeight());
+        resizeAnimation.setDuration(100);
+        mCircleView.startAnimation(resizeAnimation);
     }
 
     public enum Mode{
