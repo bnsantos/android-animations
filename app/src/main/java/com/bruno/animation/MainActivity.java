@@ -26,6 +26,14 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.keyboardAnimationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, KeyboardActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
